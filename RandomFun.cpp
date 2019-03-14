@@ -133,7 +133,7 @@ class Wiener
                 if (X.count(std::make_pair(i,k+1)) == 0)
                     X[std::make_pair(i,k+1)] = gaussian_real({(unsigned)gen(), (unsigned)gen()});
                 
-                val += X[std::make_pair(i,k-1)]*chauder(t,i,k+1);
+                val += X[std::make_pair(i,k+1)]*chauder(t,i,k+1);
             
                 val += X[std::make_pair(i,k-1)]*chauder(t,i,k-1);
         
