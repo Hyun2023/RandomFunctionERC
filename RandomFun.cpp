@@ -94,14 +94,16 @@ class Wiener
 {
     private:
         std::map< std::pair<INTEGER,INTEGER>, REAL > X;
+        std::mt19937 gen;
         REAL X_0;
         int m;
 
     public:
-        Wiener()
+        Wiener(unsigned int seed = random_device{}())
+        : gen(seed)
         {
             m = 0;
-            X_0 = gaussian_real();
+            X_0 = gaussian_real({(unsigned)gen(), (unsigned)gen()});
         }
 
         REAL wienerApprox(REAL t,int pBound)
@@ -125,11 +127,11 @@ class Wiener
                 // std::cout<<"save me lord\n";
                 // cout << k <<"hahahahahahaha\n";
                 if (X.count(std::make_pair(i,k-1)) == 0)
-                    X[std::make_pair(i,k-1)] = gaussian_real();
+                    X[std::make_pair(i,k-1)] = gaussian_real({(unsigned)gen(), (unsigned)gen()});
                 if (X.count(std::make_pair(i,k)) == 0)
-                    X[std::make_pair(i,k)] = gaussian_real();
+                    X[std::make_pair(i,k)] = gaussian_real({(unsigned)gen(), (unsigned)gen()});
                 if (X.count(std::make_pair(i,k+1)) == 0)
-                    X[std::make_pair(i,k+1)] = gaussian_real();
+                    X[std::make_pair(i,k+1)] = gaussian_real({(unsigned)gen(), (unsigned)gen()});
                 
                 val += X[std::make_pair(i,k-1)]*chauder(t,i,k+1);
             
