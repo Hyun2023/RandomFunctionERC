@@ -34,24 +34,25 @@ static REAL glue(REAL c, REAL x, REAL y)
     int p = state->ACTUAL_STACK.actual_prec/2;
     single_valued code;
     REAL pre = slow_power2(p);
-    if (choose (abs(c) < pre, abs(c) > pre / 2) == 1)
-{        return join (x, y); 
-}    else
-    {       
+    if (choose(abs(c) < pre, abs(c) > pre / 2) == 1)
+        return join(x, y);
+    else
+    {
         if (c > 0)
-            { return y;}
+            return y;
         else
-            {return x;}
+            return x;
     }
 }
 
+typedef std::function<REAL(REAL)> f_RR;
 
 // expects f(x) = g(x),
 // return h := lambda y => x>y -> g(x) | else -> f(x)
-static std::function <REAL(REAL)> join (REAL x, std::function<REAL(REAL)> f, std::function<REAL(REAL)> g)
+static f_RR join(REAL x, f_RR f, f_RR g)
 {
     //cout<<f(x)<<" "<<g(x)<<" \n";
-    return ([=](REAL y)->REAL { return glue (y-x, f(y), g(y)); });
+    return [=](REAL y) -> REAL { return glue(y-x, f(y), g(y)); };
 //     return ([=](REAL y)->REAL { 
 //         cout << x <<" "<<y<<"\n";
 //         cout <<"start comparing\n";
@@ -84,13 +85,13 @@ static INTEGER Ipow2(INTEGER X)
 
 static REAL chauder(REAL x, int n, INTEGER k)
 {
-    if(k==0) return 0;
-    REAL max=  power(REAL(2),REAL(n-1)/REAL(2));
+    if (k==0) return 0;
+    REAL max = power(REAL(2), REAL(n-1)/REAL(2));
     RATIONAL first = RATIONAL(k-1, Ipow2(n));
     REAL second = REAL(RATIONAL(k, Ipow2(n)));
     REAL third = REAL(RATIONAL(k+1, Ipow2(n)));
-    auto chauderL=[=](REAL t)  ->REAL{return  max*(t-first);};
-    auto chauderR=[=](REAL t)  ->REAL{return  max*(third-t);};
+    auto chauderL = [=](REAL t) -> REAL { return max*(t-first); };
+    auto chauderR = [=](REAL t) -> REAL { return max*(third-t); };
     // if (x == first)
     //     return 0;
     // if (x < first )
@@ -101,8 +102,7 @@ static REAL chauder(REAL x, int n, INTEGER k)
     //     {return chauderR(x);}
     // return 0;
     
-    
-    auto f= join(third, join(  second, join(first,zero,chauderL) , chauderR   ),zero);
+    auto f = join(third, join(second, join(first, zero, chauderL), chauderR), zero);
     return f(x);
 }
 
@@ -113,12 +113,14 @@ class Wiener
         std::map< std::pair<INTEGER,INTEGER>, REAL > X;
         REAL X_0;
         int m;
+
     public:
         Wiener()
         {
-            m=0;
-            X_0=gaussian_real();
+            m = 0;
+            X_0 = gaussian_real();
         }
+
         REAL wienerApprox(REAL t,int pBound)
         {
             sizetype err;
@@ -140,15 +142,18 @@ class Wiener
                 INTEGER k=y.as_INTEGER();
                 // std::cout<<"save me lord\n";
                 // cout << k <<"hahahahahahaha\n";
-                if(X.count(std::make_pair(i,k-1)) ==0) X[std::make_pair(i,k-1)]=gaussian_real();
-                if(X.count(std::make_pair(i,k)) ==0) X[std::make_pair(i,k)]=gaussian_real();
-                if(X.count(std::make_pair(i,k+1)) ==0) X[std::make_pair(i,k+1)]=gaussian_real();
+                if (X.count(std::make_pair(i,k-1)) == 0)
+                    X[std::make_pair(i,k-1)] = gaussian_real();
+                if (X.count(std::make_pair(i,k)) == 0)
+                    X[std::make_pair(i,k)] = gaussian_real();
+                if (X.count(std::make_pair(i,k+1)) == 0)
+                    X[std::make_pair(i,k+1)] = gaussian_real();
                 
-                val+=X[std::make_pair(i,k-1)]*chauder(t,i,k+1);
+                val += X[std::make_pair(i,k-1)]*chauder(t,i,k+1);
             
-                val+=X[std::make_pair(i,k-1)]*chauder(t,i,k-1);
+                val += X[std::make_pair(i,k-1)]*chauder(t,i,k-1);
         
-                val+=X[std::make_pair(i,k)]*chauder(t,i,k);
+                val += X[std::make_pair(i,k  )]*chauder(t,i,k);
 
                 // RATIONAL first = RATIONAL(k, Ipow2(i));
                 // if (t == first)
@@ -162,7 +167,6 @@ class Wiener
             val.adderror(err);
             return val;
         }
-        
 };
 }
 
