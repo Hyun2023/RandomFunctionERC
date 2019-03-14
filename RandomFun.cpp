@@ -1,16 +1,14 @@
 
-#include "iRRAM/lib.h"
-#include "iRRAM/core.h"
-#include "iRRAM.h"
+#include <vector>
+#include <functional>
+#include <map>
 
-#include "include/random-real.h"
-#include "include/random-complex.h"
+#include <iRRAM.h>
 
-#include<vector>
-#include<functional>
-#include<map>
+#include <random-real.h>
+
 using namespace iRRAM;
-
+using namespace random;
 
 REAL join(REAL a, REAL b)
 {
