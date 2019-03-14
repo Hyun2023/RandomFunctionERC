@@ -18,22 +18,11 @@ static REAL join(REAL a, REAL b)
     return m;
 }
 
-static REAL slow_power2 (int p )
-{
-    REAL x = 1;
-    for (int i =0; i<(-p); i++)
-    {
-        x = x  / 2;
-    }
-    return x;
-}
-
-
 static REAL glue(REAL c, REAL x, REAL y)
 {
     int p = state->ACTUAL_STACK.actual_prec/2;
     single_valued code;
-    REAL pre = slow_power2(p);
+    REAL pre = scale(REAL(1), p);
     if (choose(abs(c) < pre, abs(c) > pre / 2) == 1)
         return join(x, y);
     else
@@ -75,21 +64,15 @@ static REAL zero(REAL x)
     return 0;
 }
 
-static INTEGER Ipow2(INTEGER X)
-{
-    INTEGER Y = 1;
-    for (INTEGER K = X; K >0; K = K - 1)
-        Y = Y * 2;
-    return Y;
-}
-
 static REAL chauder(REAL x, int n, INTEGER k)
 {
     if (k==0) return 0;
-    REAL max = power(REAL(2), REAL(n-1)/REAL(2));
-    RATIONAL first = RATIONAL(k-1, Ipow2(n));
-    REAL second = REAL(RATIONAL(k, Ipow2(n)));
-    REAL third = REAL(RATIONAL(k+1, Ipow2(n)));
+    REAL max = scale(REAL(1), (n-1)/2);
+    if ((n-1) % 2 != 0)
+	max *= sqrt(REAL(2));
+    REAL first  = scale(REAL(k-1), -n);
+    REAL second = scale(REAL(k)  , -n);
+    REAL third  = scale(REAL(k+1), -n);
     auto chauderL = [=](REAL t) -> REAL { return max*(t-first); };
     auto chauderR = [=](REAL t) -> REAL { return max*(third-t); };
     // if (x == first)
@@ -136,7 +119,7 @@ class Wiener
                 // std::cout << i << "\n";
                 //cout<<i<<"\n";
                 // std::cout<<"????l?\n";
-                REAL y=t*REAL(Ipow2(INTEGER(i)));// power(INTEGER(2),REAL(i));
+                REAL y=scale(t, i); // *REAL(Ipow2(i));// power(INTEGER(2),REAL(i));
                 // std::cout<<"oh my god is it real?\n";
                 // cout << y << "\n";
                 INTEGER k=y.as_INTEGER();
