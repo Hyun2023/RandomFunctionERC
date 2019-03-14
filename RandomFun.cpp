@@ -10,7 +10,7 @@
 using namespace iRRAM;
 using namespace random;
 
-REAL join(REAL a, REAL b)
+static REAL join(REAL a, REAL b)
 {
     REAL  m = (a+b)/2;
     REAL  e = abs(a-b);
@@ -18,7 +18,7 @@ REAL join(REAL a, REAL b)
     return m;
 }
 
-REAL slow_power2 (int p )
+static REAL slow_power2 (int p )
 {
     REAL x = 1;
     for (int i =0; i<(-p); i++)
@@ -29,7 +29,7 @@ REAL slow_power2 (int p )
 }
 
 
-REAL glue (REAL c, REAL x, REAL y)
+static REAL glue(REAL c, REAL x, REAL y)
 {
     int p = ACTUAL_STACK.actual_prec/2;
     single_valued code;
@@ -48,7 +48,7 @@ REAL glue (REAL c, REAL x, REAL y)
 
 // expects f(x) = g(x),
 // return h := lambda y => x>y -> g(x) | else -> f(x)
-std::function <REAL(REAL)> join (REAL x, std::function<REAL(REAL)> f, std::function<REAL(REAL)> g)
+static std::function <REAL(REAL)> join (REAL x, std::function<REAL(REAL)> f, std::function<REAL(REAL)> g)
 {
     //cout<<f(x)<<" "<<g(x)<<" \n";
     return ([=](REAL y)->REAL { return glue (y-x, f(y), g(y)); });
@@ -69,12 +69,12 @@ std::function <REAL(REAL)> join (REAL x, std::function<REAL(REAL)> f, std::funct
 }
 
 
-REAL zero(REAL x)
+static REAL zero(REAL x)
 {
     return 0;
 }
 
-INTEGER Ipow2(INTEGER X)
+static INTEGER Ipow2(INTEGER X)
 {
     INTEGER Y = 1;
     for (INTEGER K = X; K >0; K = K - 1)
@@ -82,7 +82,7 @@ INTEGER Ipow2(INTEGER X)
     return Y;
 }
 
-REAL  chauder(REAL x,INTEGER n, INTEGER k)
+static REAL chauder(REAL x, int n, INTEGER k)
 {
     if(k==0) return 0;
     REAL max=  power(REAL(2),REAL(n-1)/REAL(2));
@@ -106,6 +106,7 @@ REAL  chauder(REAL x,INTEGER n, INTEGER k)
     return f(x);
 }
 
+namespace {
 class Wiener
 {
     private:
@@ -163,6 +164,7 @@ class Wiener
         }
         
 };
+}
 
 
 void compute()
