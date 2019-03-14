@@ -112,7 +112,7 @@ class Wiener
             // p=p/40;
             int p=-100;
             int required_idx=-4*p+13;
-            if(4*p+13<-1*pBound) required_idx=-1*pBound;
+            if(-4*p+13<-1*pBound) required_idx=-1*pBound;
             REAL val=X_0*t;
             // std::cout<<required_idx<<"\n";
             for(int i=1;i<=required_idx;i++)
