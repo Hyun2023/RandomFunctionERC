@@ -31,7 +31,7 @@ static REAL slow_power2 (int p )
 
 static REAL glue(REAL c, REAL x, REAL y)
 {
-    int p = ACTUAL_STACK.actual_prec/2;
+    int p = state->ACTUAL_STACK.actual_prec/2;
     single_valued code;
     REAL pre = slow_power2(p);
     if (choose (abs(c) < pre, abs(c) > pre / 2) == 1)
@@ -122,7 +122,7 @@ class Wiener
         REAL wienerApprox(REAL t,int pBound)
         {
             sizetype err;
-            // int p = ACTUAL_STACK.actual_prec;
+            // int p = state->ACTUAL_STACK.actual_prec;
             // p=p/40;
             int p=-100;
             int required_idx=-4*p+13;
