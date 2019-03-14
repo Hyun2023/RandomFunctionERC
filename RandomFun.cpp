@@ -106,7 +106,6 @@ class Wiener
 
         REAL wienerApprox(REAL t,int pBound)
         {
-            sizetype err;
             // int p = state->ACTUAL_STACK.actual_prec;
             // p=p/40;
             int p=-100;
@@ -146,6 +145,7 @@ class Wiener
                 // std::cout <<i<<"we are good";
 
             }
+            sizetype err;
             sizetype_set(err,1,p);
             val.adderror(err);
             return val;
@@ -159,8 +159,14 @@ void compute()
     Wiener w1,w2,w3;
     // cout<<chauder(REAL(0),1,0);
     //cout<<setRwidth(20)<<w.wienerApprox(REAL(1)/REAL(100))<<"\n";
+    cout << setRwidth(20);
     for(int i=0;i<=100;i++)
     {
-        cout<<setRwidth(20)<<REAL(i)/REAL(100)<<","<<w1.wienerApprox(REAL(i)/REAL(100),-100)<<","<<w2.wienerApprox(REAL(i)/REAL(100),-100)<<","<<w3.wienerApprox(REAL(i)/REAL(100),-100)<<"\n";
+        REAL j = REAL(i)/100;
+        cout << j
+             << "," << w1.wienerApprox(j, -100)
+             << "," << w2.wienerApprox(j, -100)
+             << "," << w3.wienerApprox(j, -100)
+             << "\n";
     }
 }
