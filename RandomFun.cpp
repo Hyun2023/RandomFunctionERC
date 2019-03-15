@@ -46,6 +46,29 @@ static REAL zero(REAL x)
     return 0;
 }
 
+/*
+ *            second
+ *              |
+ * M ->         +
+ *             / \
+ *            /   \
+ *           /     \
+ *          /       \
+ * 0 -> ---+         +----
+ *         |         |
+ *       first     third
+ *
+ * M = max*(second-first)
+ *   = max*(third-second)
+ *   = max*(2^-n)
+ *   = 2^((n-1)/2)*2^-n
+ *   = 2^((n-1)/2-n)
+ *   = 2^(-(n+1)/2)
+ *
+ * second = k*(2^-n)
+ * max    = 2^((n-1)/2)
+ * n      > 0
+ */
 static REAL chauder(REAL x, int n, INTEGER k)
 {
     if (k==0) return 0;
