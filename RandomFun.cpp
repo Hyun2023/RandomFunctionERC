@@ -66,7 +66,7 @@ namespace {
 class Wiener
 {
     private:
-        std::map< std::pair<INTEGER,INTEGER>, REAL > X;
+        std::vector<std::map<INTEGER,REAL>> X;
         std::mt19937 gen;
         const REAL X_0;
 
@@ -87,19 +87,22 @@ class Wiener
             p = pBound;*/
             int required_idx = max(-4 * p + 13, -pBound);
             REAL val = X_0 * t;
+            X.resize(required_idx);
             for (int i=1; i<=required_idx; i++)
             {
+                auto &Xi = X[i-1];
                 INTEGER k = scale(t, i).as_INTEGER();
-                if (X.count(std::make_pair(i,k-1)) == 0)
-                    X[std::make_pair(i,k-1)] = gr();
-                if (X.count(std::make_pair(i,k  )) == 0)
-                    X[std::make_pair(i,k  )] = gr();
-                if (X.count(std::make_pair(i,k+1)) == 0)
-                    X[std::make_pair(i,k+1)] = gr();
-                
-                val += X[std::make_pair(i,k+1)]*chauder(t,i,k+1);
-                val += X[std::make_pair(i,k-1)]*chauder(t,i,k-1);
-                val += X[std::make_pair(i,k  )]*chauder(t,i,k);
+
+                if (Xi.find(k-1) == Xi.end())
+                    Xi[k-1] = gr();
+                if (Xi.find(k  ) == Xi.end())
+                    Xi[k  ] = gr();
+                if (Xi.find(k+1) == Xi.end())
+                    Xi[k+1] = gr();
+
+                val += Xi[k-1] * chauder(t,i,k-1);
+                val += Xi[k  ] * chauder(t,i,k  );
+                val += Xi[k+1] * chauder(t,i,k+1);
             }
             sizetype err;
             sizetype_set(err,1,p);
